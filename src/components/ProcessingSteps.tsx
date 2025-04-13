@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { CheckCircle, Clock, ArrowRight, Scan, Braces, FileSearch, AlertTriangle } from "lucide-react";
 import { motion } from "framer-motion";
 import { ProcessingStep } from "@/services/firProcessingService";
