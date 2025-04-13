@@ -5,6 +5,7 @@ import FirInput from "@/components/FirInput";
 import ProcessingSteps, { ProcessingStatus } from "@/components/ProcessingSteps";
 import ResultSections, { BnsMatch } from "@/components/ResultSections";
 import { useToast } from "@/components/ui/use-toast";
+import { motion } from "framer-motion";
 
 const Index = () => {
   const [firText, setFirText] = useState("");
@@ -66,6 +67,7 @@ const Index = () => {
     toast({
       title: "Processing complete",
       description: "Found 4 matching BNS sections",
+      variant: "default",
     });
   };
 
@@ -96,12 +98,18 @@ const Index = () => {
         </div>
       </main>
       
-      <footer className="bg-gray-800 text-white py-4 mt-12">
-        <div className="container mx-auto text-center text-sm">
-          <p>FIR to BNS Matcher - Semantic Section Mapping Tool</p>
-          <p className="mt-1 text-gray-400">© {new Date().getFullYear()} All rights reserved</p>
+      <motion.footer 
+        className="bg-gradient-to-r from-fir to-bns text-white py-6 mt-12"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1, duration: 0.5 }}
+      >
+        <div className="container mx-auto text-center">
+          <p className="text-lg font-medium">FIR to BNS Matcher - Semantic Section Mapping Tool</p>
+          <p className="mt-2 text-white/80 text-sm">Advanced text analysis and semantic matching</p>
+          <p className="mt-4 text-white/60 text-xs">© {new Date().getFullYear()} All rights reserved</p>
         </div>
-      </footer>
+      </motion.footer>
     </div>
   );
 };

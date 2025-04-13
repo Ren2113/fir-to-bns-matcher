@@ -1,5 +1,6 @@
 
 import { CheckCircle, Clock, ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
 
 export type ProcessingStatus = "idle" | "extracting" | "embedding" | "matching" | "complete";
 
@@ -22,8 +23,31 @@ const ProcessingSteps = ({ status }: ProcessingStepsProps) => {
 
   const currentStepIndex = getCurrentStepIndex();
 
+  const containerVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { 
+        duration: 0.5, 
+        delay: 0.3,
+        staggerChildren: 0.2
+      }
+    }
+  };
+  
+  const itemVariants = {
+    hidden: { opacity: 0, x: -10 },
+    visible: { opacity: 1, x: 0 }
+  };
+
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
+    <motion.div 
+      className="bg-white p-6 rounded-lg shadow-lg border border-gray-100"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
       <h2 className="text-xl font-semibold mb-6 text-fir">Processing Status</h2>
       
       <div className="relative">
@@ -37,12 +61,23 @@ const ProcessingSteps = ({ status }: ProcessingStepsProps) => {
           const isPending = currentStepIndex < index && currentStepIndex !== -1;
           
           return (
-            <div key={step.id} className="relative z-10 mb-6 last:mb-0 flex items-start">
-              <div className={`h-8 w-8 rounded-full flex items-center justify-center ${
-                isActive ? 'bg-fir-light text-white animate-pulse-opacity' : 
-                isCompleted ? 'bg-green-500 text-white' : 
-                'bg-gray-200 text-gray-400'
-              }`}>
+            <motion.div 
+              key={step.id} 
+              className="relative z-10 mb-6 last:mb-0 flex items-start"
+              variants={itemVariants}
+            >
+              <motion.div 
+                className={`h-8 w-8 rounded-full flex items-center justify-center ${
+                  isActive ? 'bg-fir-light text-white' : 
+                  isCompleted ? 'bg-green-500 text-white' : 
+                  'bg-gray-200 text-gray-400'
+                }`}
+                animate={isActive ? { scale: [1, 1.1, 1], opacity: [0.7, 1, 0.7] } : {}}
+                transition={isActive ? { 
+                  repeat: Infinity, 
+                  duration: 2
+                } : {}}
+              >
                 {isActive ? (
                   <Clock className="h-5 w-5" />
                 ) : isCompleted ? (
@@ -50,7 +85,7 @@ const ProcessingSteps = ({ status }: ProcessingStepsProps) => {
                 ) : (
                   <ArrowRight className="h-5 w-5" />
                 )}
-              </div>
+              </motion.div>
               
               <div className="ml-4 flex-1">
                 <h3 className={`font-medium ${
@@ -62,22 +97,36 @@ const ProcessingSteps = ({ status }: ProcessingStepsProps) => {
                 </h3>
                 
                 {isActive && (
-                  <p className="text-sm text-gray-500 mt-1">In progress...</p>
+                  <motion.p 
+                    className="text-sm text-gray-500 mt-1"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    In progress...
+                  </motion.p>
                 )}
                 
                 {isCompleted && (
-                  <p className="text-sm text-green-600 mt-1">Completed</p>
+                  <motion.p 
+                    className="text-sm text-green-600 mt-1"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    Completed
+                  </motion.p>
                 )}
                 
                 {isPending && (
                   <p className="text-sm text-gray-400 mt-1">Waiting to start</p>
                 )}
               </div>
-            </div>
+            </motion.div>
           );
         })}
       </div>
-    </div>
+    </motion.div>
   );
 };
 
