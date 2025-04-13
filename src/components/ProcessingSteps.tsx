@@ -1,5 +1,5 @@
 
-import { CheckCircle, Clock, ArrowRight } from "lucide-react";
+import { CheckCircle, Clock, ArrowRight, Scan, Braces, FileSearch } from "lucide-react";
 import { motion } from "framer-motion";
 
 export type ProcessingStatus = "idle" | "extracting" | "embedding" | "matching" | "complete";
@@ -10,10 +10,30 @@ interface ProcessingStepsProps {
 
 const ProcessingSteps = ({ status }: ProcessingStepsProps) => {
   const steps = [
-    { id: "extracting", label: "Extracting Keywords", icon: <CheckCircle /> },
-    { id: "embedding", label: "Generating Embeddings", icon: <CheckCircle /> },
-    { id: "matching", label: "Matching BNS Sections", icon: <CheckCircle /> },
-    { id: "complete", label: "Processing Complete", icon: <CheckCircle /> },
+    { 
+      id: "extracting", 
+      label: "Extracting Keywords", 
+      icon: <Scan />,
+      description: "Identifying key terms from the FIR document"
+    },
+    { 
+      id: "embedding", 
+      label: "Generating Embeddings", 
+      icon: <Braces />,
+      description: "Converting keywords to vector representations"
+    },
+    { 
+      id: "matching", 
+      label: "Matching BNS Sections", 
+      icon: <FileSearch />,
+      description: "Finding relevant sections based on similarity"
+    },
+    { 
+      id: "complete", 
+      label: "Processing Complete", 
+      icon: <CheckCircle />,
+      description: "All steps completed successfully"
+    },
   ];
 
   const getCurrentStepIndex = () => {
@@ -43,16 +63,47 @@ const ProcessingSteps = ({ status }: ProcessingStepsProps) => {
 
   return (
     <motion.div 
-      className="bg-white p-6 rounded-lg shadow-lg border border-gray-100"
+      className="bg-white p-6 rounded-lg shadow-lg border border-gray-100 relative overflow-hidden"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
-      <h2 className="text-xl font-semibold mb-6 text-fir">Processing Status</h2>
+      {/* Decorative pattern */}
+      <div className="absolute top-0 right-0 w-32 h-32 opacity-5">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="10" cy="10" r="2" />
+          <circle cx="30" cy="10" r="2" />
+          <circle cx="50" cy="10" r="2" />
+          <circle cx="70" cy="10" r="2" />
+          <circle cx="90" cy="10" r="2" />
+          <circle cx="10" cy="30" r="2" />
+          <circle cx="30" cy="30" r="2" />
+          <circle cx="50" cy="30" r="2" />
+          <circle cx="70" cy="30" r="2" />
+          <circle cx="90" cy="30" r="2" />
+          <circle cx="10" cy="50" r="2" />
+          <circle cx="30" cy="50" r="2" />
+          <circle cx="50" cy="50" r="2" />
+          <circle cx="70" cy="50" r="2" />
+          <circle cx="90" cy="50" r="2" />
+          <circle cx="10" cy="70" r="2" />
+          <circle cx="30" cy="70" r="2" />
+          <circle cx="50" cy="70" r="2" />
+          <circle cx="70" cy="70" r="2" />
+          <circle cx="90" cy="70" r="2" />
+          <circle cx="10" cy="90" r="2" />
+          <circle cx="30" cy="90" r="2" />
+          <circle cx="50" cy="90" r="2" />
+          <circle cx="70" cy="90" r="2" />
+          <circle cx="90" cy="90" r="2" />
+        </svg>
+      </div>
       
-      <div className="relative">
+      <h2 className="text-xl font-semibold mb-6 text-fir relative z-10">Processing Status</h2>
+      
+      <div className="relative z-10">
         {/* Progress line */}
-        <div className="absolute left-4 top-0 w-0.5 h-full bg-gray-200 z-0"></div>
+        <div className="absolute left-[22px] top-3 w-1 h-[calc(100%-24px)] bg-gradient-to-b from-gray-200 via-blue-100 to-fir/20 rounded-full z-0"></div>
         
         {steps.map((step, index) => {
           // Determine the state of this step
@@ -63,16 +114,19 @@ const ProcessingSteps = ({ status }: ProcessingStepsProps) => {
           return (
             <motion.div 
               key={step.id} 
-              className="relative z-10 mb-6 last:mb-0 flex items-start"
+              className="relative z-10 mb-8 last:mb-0 flex items-start"
               variants={itemVariants}
             >
               <motion.div 
-                className={`h-8 w-8 rounded-full flex items-center justify-center ${
-                  isActive ? 'bg-fir-light text-white' : 
-                  isCompleted ? 'bg-green-500 text-white' : 
+                className={`h-10 w-10 rounded-full flex items-center justify-center ${
+                  isActive ? 'bg-fir-light text-white shadow-lg shadow-fir/20' : 
+                  isCompleted ? 'bg-green-500 text-white shadow-lg shadow-green-500/20' : 
                   'bg-gray-200 text-gray-400'
                 }`}
-                animate={isActive ? { scale: [1, 1.1, 1], opacity: [0.7, 1, 0.7] } : {}}
+                animate={isActive ? { 
+                  scale: [1, 1.1, 1],
+                  boxShadow: ['0 10px 15px -3px rgba(0, 0, 0, 0.1)', '0 20px 25px -5px rgba(0, 0, 0, 0.1)', '0 10px 15px -3px rgba(0, 0, 0, 0.1)']
+                } : {}}
                 transition={isActive ? { 
                   repeat: Infinity, 
                   duration: 2
@@ -83,7 +137,9 @@ const ProcessingSteps = ({ status }: ProcessingStepsProps) => {
                 ) : isCompleted ? (
                   <CheckCircle className="h-5 w-5" />
                 ) : (
-                  <ArrowRight className="h-5 w-5" />
+                  <div className="p-1">
+                    {step.icon || <ArrowRight className="h-4 w-4" />}
+                  </div>
                 )}
               </motion.div>
               
@@ -97,29 +153,46 @@ const ProcessingSteps = ({ status }: ProcessingStepsProps) => {
                 </h3>
                 
                 {isActive && (
-                  <motion.p 
-                    className="text-sm text-gray-500 mt-1"
+                  <motion.div 
+                    className="mt-1"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.3 }}
                   >
-                    In progress...
-                  </motion.p>
+                    <p className="text-sm text-gray-500">{step.description}</p>
+                    <div className="mt-2 bg-blue-50 rounded-full h-1.5 overflow-hidden">
+                      <motion.div 
+                        className="bg-fir-light h-full"
+                        initial={{ width: "0%" }}
+                        animate={{ width: "100%" }}
+                        transition={{ 
+                          duration: 3,
+                          ease: "easeInOut",
+                          repeat: Infinity,
+                        }}
+                      />
+                    </div>
+                    <p className="text-xs text-fir-light mt-1">In progress...</p>
+                  </motion.div>
                 )}
                 
                 {isCompleted && (
-                  <motion.p 
-                    className="text-sm text-green-600 mt-1"
+                  <motion.div 
+                    className="mt-1"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.3 }}
                   >
-                    Completed
-                  </motion.p>
+                    <p className="text-sm text-gray-500">{step.description}</p>
+                    <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
+                      <CheckCircle className="h-3 w-3" />
+                      Completed
+                    </p>
+                  </motion.div>
                 )}
                 
                 {isPending && (
-                  <p className="text-sm text-gray-400 mt-1">Waiting to start</p>
+                  <p className="text-sm text-gray-400 mt-1">{step.description}</p>
                 )}
               </div>
             </motion.div>

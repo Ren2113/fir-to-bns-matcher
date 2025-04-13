@@ -6,6 +6,7 @@ import ProcessingSteps, { ProcessingStatus } from "@/components/ProcessingSteps"
 import ResultSections, { BnsMatch } from "@/components/ResultSections";
 import { useToast } from "@/components/ui/use-toast";
 import { motion } from "framer-motion";
+import { FileSearch, FileDigit, PanelLeftClose } from "lucide-react";
 
 const Index = () => {
   const [firText, setFirText] = useState("");
@@ -72,10 +73,63 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 relative">
+      {/* Background decoration */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-32 -right-32 w-96 h-96 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
+        <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-indigo-100 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
+        
+        <motion.div 
+          className="absolute top-1/4 right-8 text-fir-light/10"
+          animate={{ 
+            y: [0, 20, 0], 
+            rotate: [0, 5, 0],
+            scale: [1, 1.05, 1]
+          }}
+          transition={{ 
+            repeat: Infinity, 
+            duration: 10,
+            ease: "easeInOut"
+          }}
+        >
+          <FileSearch size={180} />
+        </motion.div>
+        
+        <motion.div 
+          className="absolute bottom-1/4 left-8 text-bns-light/10"
+          animate={{ 
+            y: [0, -20, 0], 
+            rotate: [0, -5, 0],
+            scale: [1, 1.05, 1]
+          }}
+          transition={{ 
+            repeat: Infinity, 
+            duration: 12,
+            ease: "easeInOut",
+            delay: 1
+          }}
+        >
+          <FileDigit size={160} />
+        </motion.div>
+        
+        <motion.div 
+          className="absolute top-1/2 left-1/3 text-gray-200/30"
+          animate={{ 
+            rotate: [0, 360],
+          }}
+          transition={{ 
+            repeat: Infinity, 
+            duration: 60,
+            ease: "linear"
+          }}
+        >
+          <PanelLeftClose size={120} />
+        </motion.div>
+      </div>
+      
       <Header />
       
-      <main className="container mx-auto py-8 px-4">
+      <main className="container mx-auto py-8 px-4 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
             <FirInput 
@@ -99,12 +153,15 @@ const Index = () => {
       </main>
       
       <motion.footer 
-        className="bg-gradient-to-r from-fir to-bns text-white py-6 mt-12"
+        className="bg-gradient-to-r from-fir to-bns text-white py-6 mt-12 relative"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1, duration: 0.5 }}
       >
-        <div className="container mx-auto text-center">
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute top-0 left-0 w-full h-full bg-grid-white/[0.2] bg-[length:20px_20px]"></div>
+        </div>
+        <div className="container mx-auto text-center relative z-10">
           <p className="text-lg font-medium">FIR to BNS Matcher - Semantic Section Mapping Tool</p>
           <p className="mt-2 text-white/80 text-sm">Advanced text analysis and semantic matching</p>
           <p className="mt-4 text-white/60 text-xs">© {new Date().getFullYear()} All rights reserved</p>
