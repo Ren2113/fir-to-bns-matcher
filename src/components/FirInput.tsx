@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Upload, FileText, ArrowRight, FileType } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { motion } from "framer-motion";
 
 interface FirInputProps {
@@ -20,10 +20,10 @@ const FirInput = ({ onFirSubmit, isProcessing }: FirInputProps) => {
     
     if (!file) return;
     
-    if (file.type !== "text/plain" && file.type !== "application/pdf" && file.type !== "application/json") {
+    if (file.type !== "text/plain" && file.type !== "application/pdf") {
       toast({
         title: "Invalid file type",
-        description: "Please upload a .txt, .pdf, or .json file",
+        description: "Please upload a .txt or .pdf file",
         variant: "destructive",
       });
       return;

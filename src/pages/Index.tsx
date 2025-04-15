@@ -1,62 +1,75 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Header from "@/components/Header";
 import FirInput from "@/components/FirInput";
-import ProcessingSteps from "@/components/ProcessingSteps";
+import ProcessingSteps, { ProcessingStatus } from "@/components/ProcessingSteps";
 import ResultSections, { BnsMatch } from "@/components/ResultSections";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { motion } from "framer-motion";
 import { FileSearch, FileDigit, PanelLeftClose } from "lucide-react";
-import { ProcessingStep, ProcessingStatus, processFirText, ProcessingResult } from "@/services/firProcessingService";
-import { loadAndProcessBnsSections } from "@/services/bnsService";
 
 const Index = () => {
   const [firText, setFirText] = useState("");
-  const [processingStatus, setProcessingStatus] = useState<ProcessingStatus>({
-    step: ProcessingStep.IDLE,
-    progress: 0
-  });
-  const [processingResult, setProcessingResult] = useState<ProcessingResult | null>(null);
+  const [processingStatus, setProcessingStatus] = useState<ProcessingStatus>("idle");
   const [matches, setMatches] = useState<BnsMatch[]>([]);
   const { toast } = useToast();
-
-  // Preload BNS sections on component mount
-  useEffect(() => {
-    const preloadBnsSections = async () => {
-      try {
-        await loadAndProcessBnsSections();
-        console.log("BNS sections preloaded successfully");
-      } catch (error) {
-        console.error("Failed to preload BNS sections:", error);
-      }
-    };
-
-    preloadBnsSections();
-  }, []);
 
   const handleFirSubmit = async (text: string) => {
     setFirText(text);
     setMatches([]);
-    setProcessingResult(null);
     
-    try {
-      const result = await processFirText(text, setProcessingStatus);
-      setProcessingResult(result);
-      setMatches(result.matches);
-      
-      toast({
-        title: "Processing complete",
-        description: `Found ${result.matches.length} matching BNS sections`,
-        variant: "default",
-      });
-    } catch (error) {
-      console.error("Error processing FIR:", error);
-      toast({
-        title: "Processing Error",
-        description: error instanceof Error ? error.message : "An error occurred during processing",
-        variant: "destructive",
-      });
-    }
+    // Simulate the processing steps with timeouts
+    // In a real application, you would call your API here
+    
+    setProcessingStatus("extracting");
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    setProcessingStatus("embedding");
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    setProcessingStatus("matching");
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    // Simulate getting results
+    const mockResults: BnsMatch[] = [
+      {
+        sectionId: "bns-101",
+        sectionTitle: "BNS Section 101: Criminal Complaints",
+        sectionContent: "This section outlines the procedures for filing criminal complaints with the appropriate authorities. It includes information about the required format, the necessary signatories, and the timeline for processing such complaints.",
+        matchScore: 0.89,
+        matchedKeywords: ["criminal", "complaint", "authorities", "processing"]
+      },
+      {
+        sectionId: "bns-204",
+        sectionTitle: "BNS Section 204: Evidence Collection",
+        sectionContent: "Details the proper methods for evidence collection at crime scenes, including documentation requirements, chain of custody procedures, and preservation techniques.",
+        matchScore: 0.74,
+        matchedKeywords: ["evidence", "collection", "documentation", "crime"]
+      },
+      {
+        sectionId: "bns-315",
+        sectionTitle: "BNS Section 315: Witness Statements",
+        sectionContent: "Guidelines for recording witness statements, including format requirements, verification procedures, and recording of demographic information of witnesses.",
+        matchScore: 0.67,
+        matchedKeywords: ["witness", "statements", "verification", "recording"]
+      },
+      {
+        sectionId: "bns-422",
+        sectionTitle: "BNS Section 422: Preliminary Investigation",
+        sectionContent: "Procedures for conducting preliminary investigations, including scene examination, interviewing relevant parties, and initial evidence assessment prior to formal investigation.",
+        matchScore: 0.58,
+        matchedKeywords: ["investigation", "examination", "evidence", "preliminary"]
+      }
+    ];
+    
+    setMatches(mockResults);
+    setProcessingStatus("complete");
+    
+    toast({
+      title: "Processing complete",
+      description: "Found 4 matching BNS sections",
+      variant: "default",
+    });
   };
 
   return (
@@ -121,45 +134,19 @@ const Index = () => {
           <div className="lg:col-span-2">
             <FirInput 
               onFirSubmit={handleFirSubmit} 
-              isProcessing={processingStatus.step !== ProcessingStep.IDLE && processingStatus.step !== ProcessingStep.COMPLETE && processingStatus.step !== ProcessingStep.ERROR} 
+              isProcessing={processingStatus !== "idle" && processingStatus !== "complete"} 
             />
             
-            {processingResult && (
+            {matches.length > 0 && (
               <div className="mt-6">
-                <motion.div 
-                  className="bg-white p-4 rounded-lg shadow mb-6 border border-gray-100"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  <h3 className="font-medium text-fir mb-2">Extracted Keywords</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {processingResult.keywords.map((keyword, index) => (
-                      <motion.span 
-                        key={keyword} 
-                        className="px-3 py-1 bg-fir-light/10 text-fir rounded-full text-sm"
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: index * 0.05 }}
-                      >
-                        {keyword}
-                      </motion.span>
-                    ))}
-                  </div>
-                </motion.div>
-                
                 <ResultSections matches={matches} />
               </div>
             )}
           </div>
           
           <div>
-            {processingStatus.step !== ProcessingStep.IDLE && (
-              <ProcessingSteps 
-                status={processingStatus.step} 
-                message={processingStatus.message}
-                progress={processingStatus.progress}
-              />
+            {processingStatus !== "idle" && (
+              <ProcessingSteps status={processingStatus} />
             )}
           </div>
         </div>
