@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -57,14 +58,22 @@ const FirInput = ({ onFirSubmit, isProcessing }: FirInputProps) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.2 }}
     >
+      {/* Background Images */}
+      <div className="absolute inset-0 opacity-5">
+        <div 
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ 
+            backgroundImage: 'url("/images/legal-books.jpg")',
+            backgroundBlendMode: 'overlay'
+          }}
+        />
+      </div>
+      
       <div className="absolute -right-16 -bottom-16 opacity-5 pointer-events-none">
         <Scale size={200} />
       </div>
       <div className="absolute -top-12 -left-12 opacity-5 pointer-events-none rotate-45">
         <Gavel size={160} />
-      </div>
-      <div className="absolute top-0 right-0 w-full h-full opacity-5 pointer-events-none">
-        <div className="absolute top-0 left-0 w-full h-full bg-grid-white/[0.2] bg-[length:20px_20px]"></div>
       </div>
       
       <motion.div

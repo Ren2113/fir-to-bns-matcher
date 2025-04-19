@@ -5,6 +5,15 @@ import { motion } from "framer-motion";
 const Header = () => {
   return (
     <header className="bg-gradient-to-r from-fir to-bns p-6 shadow-lg relative overflow-hidden">
+      {/* Background Image */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center opacity-10"
+        style={{ 
+          backgroundImage: 'url("/images/courthouse.jpg")',
+          backgroundBlendMode: 'overlay'
+        }}
+      />
+      
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-0 left-0 w-full h-full bg-grid-white/[0.2] bg-[length:20px_20px]"></div>
